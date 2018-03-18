@@ -1,8 +1,11 @@
 class CustomersController < ApplicationController
-  before_action :set_customer, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_customer, only: [:show, :edit, :update, :destroy] #追加
 
   def index
-    @customers = Customer.page(params[:page])
+    #@customers = Customer.page(params[:page])
+    @q = Customer.includes(:post, :company).ransack(params[:q])
+    @customers = @q.result.page(params[:page])
   end
 
   def new
@@ -45,7 +48,8 @@ class CustomersController < ApplicationController
       :family_name,
       :given_name,
       :email,
-      :company_id)
+      :company_id,
+      :post_id)
   end
 
   def set_customer
