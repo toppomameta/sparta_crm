@@ -4,7 +4,7 @@ class CustomersController < ApplicationController
 
   def index
     #@customers = Customer.page(params[:page])
-    @q = Customer.includes(:post, :company).ransack(params[:q])
+    @q = Customer.includes(:post, :company, :comments).ransack(params[:q])
     @customers = @q.result.page(params[:page])
   end
 
@@ -34,6 +34,11 @@ class CustomersController < ApplicationController
   end
 
   def show
+    @customer = Customer.find(params[:id])
+    @comment = Comment.new
+    # @comments = Comment.where(customer_id: params[:id].to_i)
+# 下記を追加
+    @comments = @customer.comments
   end
 
   def destroy
